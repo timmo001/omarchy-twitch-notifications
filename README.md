@@ -19,7 +19,8 @@ The daemon owns Twitch credentials and channel configuration. Follow the
 Review the repository, then add the plugin:
 
 ```bash
-omarchy plugin add https://github.com/timmo001/omarchy-twitch.git
+omarchy plugin add \
+  https://github.com/timmo001/omarchy-twitch-notifications.git
 ```
 
 Accept the prompt to enable the plugin during installation.
@@ -27,7 +28,8 @@ Accept the prompt to enable the plugin during installation.
 For an unattended install from a repository you already trust:
 
 ```bash
-omarchy plugin add https://github.com/timmo001/omarchy-twitch.git \
+omarchy plugin add \
+  https://github.com/timmo001/omarchy-twitch-notifications.git \
   --enable --yes
 ```
 
