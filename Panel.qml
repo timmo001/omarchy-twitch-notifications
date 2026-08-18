@@ -441,8 +441,11 @@ Panel {
             id: channelDelegate
 
             CursorSurface {
+              id: channelSurface
               required property int index
               required property var modelData
+              readonly property bool hasThumbnail: modelData.value.live === true
+                && String(modelData.value.thumbnailUrl || "") !== ""
               width: contentColumn.width
               implicitHeight: channelColumn.implicitHeight + Style.space(12)
               hasCursor: filterController.cursorIndex === filterController.indexForKey(modelData.key)
@@ -457,18 +460,45 @@ Panel {
                 anchors.rightMargin: Style.space(8)
                 spacing: Style.space(10)
 
-                Text {
-                  width: Style.space(22)
-                  text: modelData.value.live === true ? "" : "󰖪"
-                  color: modelData.value.live === true ? "#ac77e5" : Qt.darker(root.contentForeground, 1.5)
-                  font.family: root.contentFontFamily
-                  font.pixelSize: Style.font.icon
-                  horizontalAlignment: Text.AlignHCenter
+                Item {
+                  width: Style.space(64)
+                  height: Math.round(width * 9 / 16)
+                  clip: true
+
+                  Rectangle {
+                    anchors.fill: parent
+                    color: modelData.value.live === true
+                      ? Qt.darker(root.contentForeground, 2.2)
+                      : Qt.darker(root.contentForeground, 2.5)
+                    radius: Style.space(4)
+                  }
+
+                  Image {
+                    id: channelThumbnail
+                    anchors.fill: parent
+                    visible: channelSurface.hasThumbnail
+                    source: channelSurface.hasThumbnail ? String(modelData.value.thumbnailUrl) : ""
+                    asynchronous: true
+                    cache: false
+                    fillMode: Image.PreserveAspectCrop
+                  }
+
+                  Text {
+                    id: channelIcon
+                    anchors.fill: parent
+                    visible: !channelSurface.hasThumbnail || channelThumbnail.status !== Image.Ready
+                    text: modelData.value.live === true ? "" : "󰖪"
+                    color: modelData.value.live === true ? "#ac77e5" : Qt.darker(root.contentForeground, 1.5)
+                    font.family: root.contentFontFamily
+                    font.pixelSize: Style.font.icon
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                  }
                 }
 
                 Column {
                   id: channelColumn
-                  width: Math.max(0, parent.width - Style.space(62))
+                  width: Math.max(0, parent.width - Style.space(104))
                   spacing: Style.space(2)
 
                   Text {
